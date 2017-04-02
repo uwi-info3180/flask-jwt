@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1 class="page-header">JWT Demo</h1>
+<p class="lead">This application is a basic demonstration of JSON Web Tokens being used in a Flask App.</p>
+<p>The application uses the Angular JS to make requests to a simple API, but a JWT token needs to be passed in an Authorization header in order to work with the <code>/api/secure</code> route.</p>
+<p>Visit the <a href="{{ url_for('demo') }}">Demo</a> and click the buttons provided.</p>
+{% endblock %}

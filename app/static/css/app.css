@@ -1,0 +1,29 @@
+body {
+    padding-top: 20px;
+}
+
+.jumbotron {
+  background-color: #000000;
+}
+
+.jumbotron img {
+  margin: 0 10px;
+  max-height: 50px;
+}
+
+.modal-body {
+  word-wrap: break-word;
+}
+
+.highlight {
+  padding: 9px 14px;
+  margin-bottom: 14px;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  border-radius: 4px;
+}
+
+.jwt-token {
+  font-family: Monaco, consolas, monospace;
+  font-weight: bold;
+}
