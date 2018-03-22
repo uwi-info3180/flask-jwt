@@ -96,6 +96,25 @@ def generate_token():
 
     return jsonify(error=None, data={'token': token}, message="Token Generated")
 
+
+@app.route('/api/tasks')
+def tasks():
+    tasks = [
+        {
+            'id': 1,
+            'title': 'Teach class'
+        },
+        {
+            'id': 2,
+            'title': 'Give Quiz'
+        },
+        {
+            'id': 3,
+            'title': 'Do Review class for exam'
+        }
+    ]
+    return jsonify(error=None, tasks=tasks)
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
