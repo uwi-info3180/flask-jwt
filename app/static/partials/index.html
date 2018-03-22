@@ -18,18 +18,20 @@
             {{ result }}
         </div>
 
-        <div class="btn-group pull-left">
-            <button type="button" @click="getSecure" class="btn btn-success"><span
-                    class="glyphicon glyphicon-lock"></span> Secure
-            </button>
-            <button type="button" @click="getUnsecure" class="btn btn-danger">Unsecure</button>
-        </div>
+        <div class="d-flex justify-content-between">
+            <div class="btn-group">
+                <button type="button" @click="getSecure" class="btn btn-success"><span
+                        class="glyphicon glyphicon-lock"></span> Secure
+                </button>
+                <button type="button" @click="getUnsecure" class="btn btn-danger">Unsecure</button>
+            </div>
 
-        <div class="btn-group pull-right">
-            <button type="button" @click="getToken" class="btn btn-info" data-toggle="modal" data-target="#tokenModal">
-                Get Token
-            </button>
-            <button type="button" @click="removeToken" class="btn btn-danger">Remove Token</button>
+            <div class="btn-group">
+                <button type="button" @click="getToken" class="btn btn-info" data-toggle="modal" data-target="#tokenModal">
+                    Get Token
+                </button>
+                <button type="button" @click="removeToken" class="btn btn-danger">Remove Token</button>
+            </div>
         </div>
     </div>
 
