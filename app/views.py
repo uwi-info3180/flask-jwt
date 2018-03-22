@@ -9,7 +9,7 @@ from app import app
 from flask import render_template, request, redirect, url_for, jsonify, g
 from models import User
 
-## Using JWT
+# Using JWT
 import jwt
 from flask import _request_ctx_stack
 from functools import wraps
@@ -59,13 +59,15 @@ def home():
     """Render website's home page."""
     return render_template('home.html')
 
+
 @app.route('/demo')
 def demo():
     # This loads a static HTML file where we then hand over the interaction
     # to AngularJS
     return app.send_static_file('partials/index.html')
 
-## This route requires a JWT in order to work. Note the @reques_auth
+
+# This route requires a JWT in order to work. Note the @reques_auth
 @app.route('/api/secure', methods=['GET'])
 @requires_auth
 def api_secure():
@@ -75,13 +77,15 @@ def api_secure():
     user = g.current_user
     return jsonify(data={"user": user}, message="Success")
 
-## This route doesn't require a JWT
+
+# This route doesn't require a JWT
 @app.route('/api/unsecure', methods=['GET'])
 def api_unsecure():
     user = {"name": "Mr. Anonymous Unsecure"}
     return jsonify(data={"user": user}, message="Success")
 
-## This route is just used to demonstrate a JWT being generated.
+
+# This route is just used to demonstrate a JWT being generated.
 @app.route('/token')
 def generate_token():
     # Under normal circumstances you would generate this token when a user
@@ -95,6 +99,7 @@ def generate_token():
 ###
 # The functions below should be applicable to all Flask apps.
 ###
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
@@ -121,4 +126,4 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0",port="8080")
+    app.run(debug=True, host="0.0.0.0", port="8080")

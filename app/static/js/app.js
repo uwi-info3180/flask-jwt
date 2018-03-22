@@ -1,69 +1,83 @@
 /* Add your Application JavaScript */
-const app = angular.module('jwtDemo', []);
+const app = new Vue({
+    el: '#jwtDemo',
+    data: {
+        result: 'The result will appear here.',
+        token: ''
+    },
+    methods: {
+        // Usually the generation of a JWT will be done when a user either registers
+        // with your web application or when they login.
+        getToken: function () {
+            let self = this;
 
-app.controller('jwtController', function ($scope, $http) {
-  $scope.result = 'The result will appear here.';
-  $scope.token = '';
+            fetch('/token')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    let jwt_token = response.data.token;
 
-  // Usually the generation of a JWT will be done when a user either registers
-  // with your web application or when they login.
-  $scope.getToken = function() {
-    $http.get('/token')
-      .then(function(response) {
-        let jwt_token = response.data.data.token;
+                    // We store this token in localStorage so that subsequent API requests
+                    // can use the token until it expires or is deleted.
+                    localStorage.setItem('token', jwt_token);
+                    console.info('Token generated and added to localStorage.');
+                    self.token = jwt_token;
+                })
+        },
+        // Remove token stored in localStorage.
+        // Usually you will remove it when a user logs out of your web application
+        // or if the token has expired.
+        removeToken: function () {
+            localStorage.removeItem('token');
+            console.info('Token removed from localStorage.');
+            alert('Token removed!');
+        },
+        getSecure: function () {
+            let self = this;
+            fetch('/api/secure', {
+                'headers': {
+                    // Try it with the `Basic` schema and you will see it gives an error message.
+                    // 'Authorization': 'Basic ' + localStorage.getItem('token')
 
-        // We store this token in localStorage so that subsequent API requests
-        // can use the token until it expires or is deleted.
-        localStorage.setItem('token', jwt_token);
-        console.info('Token generated and added to localStorage.');
-        $scope.token = jwt_token;
-      });
-  };
+                    // JWT requires the Authorization schema to be `Bearer` instead of `Basic`
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    let alert = document.querySelector('.alert');
+                    alert.classList.remove('alert-info', 'alert-danger');
+                    alert.classList.add('alert-success');
 
-  // Remove token stored in localStorage.
-  // Usually you will remove it when a user logs out of your web application
-  // or if the token has expired.
-  $scope.removeToken = function() {
-    localStorage.removeItem('token');
-    console.info('Token removed from localStorage.');
-    alert('Token removed!');
-  };
+                    let result = response.data;
+                    // successful response
+                    self.result = `Congrats! You have now made a successful request with a JSON Web Token. Name is: ${result.user.name}.`;
+                })
+                .catch(function (error) {
+                    let alert = document.querySelector('.alert');
+                    alert.classList.remove('alert-info');
+                    alert.classList.add('alert-danger');
 
-  // The /api/secure route requires a JWT token be sent via an Authorization
-  // header. JWT also needs to use the 'Bearer' schema.
-  $scope.getSecure = function() {
-    $http.get('/api/secure', {
-      'headers': {
-        // Try it with the `Basic` schema and you will see it gives an error message.
-        // 'Authorization': 'Basic ' + localStorage.getItem('token')
-
-        // JWT requires the Authorization schema to be `Bearer` instead of `Basic`
-        // 'Authorization': 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(function(response) {
-      let alert = document.querySelector('.alert');
-      alert.classList.remove('alert-info', 'alert-danger');
-      alert.classList.add('alert-success');
-
-      let result = response.data;
-      // successful response
-      $scope.result = `Congrats! You have now made a successful request with a JSON Web Token. Name is: ${result.data.user.name}.`;
-    }, function(response) {
-      let alert = document.querySelector('.alert');
-      alert.classList.remove('alert-info');
-      alert.classList.add('alert-danger');
-
-      // unsuccessful response (ie. there was an error)
-      $scope.result = `There was an error. ${response.data.description}`;
-    });
-  };
-
-  // Visit the unsecure route which doesn't need a JWT token or
-  // Authorization header
-  $scope.getUnsecure = function() {
-    $http.get('/api/unsecure').then(function(response) {
-      let result = response.data;
-      $scope.result = `You visited the unsecure route that didn't require a JSON Web Token. Name is: ${result.data.user.name}.`;
-    });
-  };
+                    // unsuccessful response (ie. there was an error)
+                    self.result = `There was an error. ${error.description}`;
+                })
+        },
+        // Visit the unsecure route which doesn't need a JWT token or
+        // Authorization header
+        getUnsecure: function () {
+            let self = this;
+            fetch('/api/unsecure')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    let result = response.data;
+                    console.log(result);
+                    self.result = `You visited the unsecure route that didn't require a JSON Web Token. Name is: ${result.user.name}.`;
+                });
+        }
+    }
 });
