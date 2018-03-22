@@ -63,7 +63,7 @@ def home():
 @app.route('/demo')
 def demo():
     # This loads a static HTML file where we then hand over the interaction
-    # to AngularJS
+    # to VueJS
     return app.send_static_file('partials/index.html')
 
 
