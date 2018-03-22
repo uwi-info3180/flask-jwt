@@ -11,3 +11,6 @@ venv/
 
 # NodeJS
 node_modules
+
+# PyCharm
+.idea
