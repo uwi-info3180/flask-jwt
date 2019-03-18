@@ -92,7 +92,7 @@ def generate_token():
     # logs into your web application and you send it back to the frontend
     # where it can be stored in localStorage for any subsequent API requests.
     payload = {'sub': '12345', 'name': 'John Doe'}
-    token = jwt.encode(payload, 'some-secret', algorithm='HS256')
+    token = jwt.encode(payload, 'some-secret', algorithm='HS256').decode('utf-8')
 
     return jsonify(error=None, data={'token': token}, message="Token Generated")
 
