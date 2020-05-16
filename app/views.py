@@ -98,6 +98,7 @@ def generate_token():
 
 
 @app.route('/api/tasks')
+# @requires_auth
 def tasks():
     tasks = [
         {

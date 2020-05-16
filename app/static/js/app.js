@@ -3,7 +3,9 @@ const app = new Vue({
     el: '#jwtDemo',
     data: {
         result: 'The result will appear here.',
-        token: ''
+        token: '',
+        tasks: [],
+        error: false
     },
     methods: {
         // Usually the generation of a JWT will be done when a user either registers
@@ -52,17 +54,25 @@ const app = new Vue({
                     alert.classList.remove('alert-info', 'alert-danger');
                     alert.classList.add('alert-success');
 
-                    let result = response.data;
-                    // successful response
-                    self.result = `Congrats! You have now made a successful request with a JSON Web Token. Name is: ${result.user.name}.`;
+                    if (response.data) {
+                        let result = response.data;
+                        // successful response
+                        self.result = `Congrats! You have now made a successful request with a JSON Web Token. Name is: ${result.user.name}.`;
+                    } else {
+                        let alert = document.querySelector('.alert');
+                        alert.classList.remove('alert-info');
+                        alert.classList.add('alert-danger');
+
+                        // unsuccessful response (ie. there was an error)
+                        self.result = `There was an error. ${response.description}`;                        
+                    }
                 })
                 .catch(function (error) {
                     let alert = document.querySelector('.alert');
                     alert.classList.remove('alert-info');
                     alert.classList.add('alert-danger');
-
                     // unsuccessful response (ie. there was an error)
-                    self.result = `There was an error. ${error.description}`;
+                    self.result = `There was an error.`;
                 })
         },
         // Visit the unsecure route which doesn't need a JWT token or
@@ -75,8 +85,40 @@ const app = new Vue({
                 })
                 .then(function (response) {
                     let result = response.data;
-                    console.log(result);
+                    let alert = document.querySelector('.alert');
+                    alert.classList.remove('alert-danger');
+                    alert.classList.add('alert-info');
                     self.result = `You visited the unsecure route that didn't require a JSON Web Token. Name is: ${result.user.name}.`;
+                });
+        },
+        getTasks: function() {
+            let self = this;
+            fetch('/api/tasks', 
+            // {
+            //     'headers': {
+            //         // Try it with the `Basic` schema and you will see it gives an error message.
+            //         // 'Authorization': 'Basic ' + localStorage.getItem('token')
+
+            //         // JWT requires the Authorization schema to be `Bearer` instead of `Basic`
+            //         'Authorization': 'Bearer ' + localStorage.getItem('token')
+            //     }
+            // }
+            )
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (data.tasks) {
+                        console.log(data.tasks);
+                        self.tasks = data.tasks;
+                        self.error = false;
+                    } else {
+                        self.error = `Error getting tasks. ${data.description}`;
+                        self.tasks = [];
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
                 });
         }
     }
