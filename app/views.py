@@ -1,20 +1,12 @@
-"""
-Flask Documentation:     http://flask.pocoo.org/docs/
-Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
-Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
-This file creates your application.
-"""
-
 from app import app
-from flask import render_template, request, redirect, url_for, jsonify, g
+from flask import render_template, request, jsonify, g, make_response
 from app.models import User
 
 # Using JWT
 import jwt
 from flask import _request_ctx_stack
 from functools import wraps
-import base64
-import os
+import datetime
 
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -22,7 +14,8 @@ import os
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    auth = request.headers.get('Authorization', None)
+    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None)
+
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
 
@@ -37,9 +30,9 @@ def requires_auth(f):
 
     token = parts[1]
     try:
-         payload = jwt.decode(token, 'some-secret')
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
 
-    except jwt.ExpiredSignature:
+    except jwt.ExpiredSignatureError:
         return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
     except jwt.DecodeError:
         return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
@@ -91,10 +84,20 @@ def generate_token():
     # Under normal circumstances you would generate this token when a user
     # logs into your web application and you send it back to the frontend
     # where it can be stored in localStorage for any subsequent API requests.
-    payload = {'sub': '12345', 'name': 'John Doe'}
-    token = jwt.encode(payload, 'some-secret', algorithm='HS256').decode('utf-8')
+    payload = {
+        'sub': '12345', 
+        'name': 'John Doe',
+        'iat': datetime.datetime.now(datetime.timezone.utc),
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=30)
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
 
     return jsonify(error=None, data={'token': token}, message="Token Generated")
+
+    # If you wanted to store the token in a cookie
+    # resp = make_response(jsonify(error=None, data={'token': token}, message="Token Generated"))
+    # resp.set_cookie('token', "Bearer " + token, httponly=True, secure=True)
+    # return resp
 
 
 @app.route('/api/tasks')
@@ -107,11 +110,11 @@ def tasks():
         },
         {
             'id': 2,
-            'title': 'Give Quiz'
+            'title': 'Eat Lunch'
         },
         {
             'id': 3,
-            'title': 'Do Review class for exam'
+            'title': 'Build the next great web app!'
         }
     ]
     return jsonify(error=None, tasks=tasks)
