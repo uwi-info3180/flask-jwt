@@ -1,16 +1,17 @@
 /* Add your Application JavaScript */
-const app = new Vue({
-    el: '#jwtDemo',
-    data: {
-        result: 'The result will appear here.',
-        token: '',
-        tasks: [],
-        error: false
+const app = Vue.createApp({
+    data() {
+        return {
+            result: 'The result will appear here.',
+            token: '',
+            tasks: [],
+            error: false
+        }
     },
     methods: {
         // Usually the generation of a JWT will be done when a user either registers
         // with your web application or when they login.
-        getToken: function () {
+        getToken() {
             let self = this;
 
             fetch('/token')
@@ -30,12 +31,12 @@ const app = new Vue({
         // Remove token stored in localStorage.
         // Usually you will remove it when a user logs out of your web application
         // or if the token has expired.
-        removeToken: function () {
+        removeToken() {
             localStorage.removeItem('token');
             console.info('Token removed from localStorage.');
             alert('Token removed!');
         },
-        getSecure: function () {
+        getSecure() {
             let self = this;
             fetch('/api/secure', {
                 'headers': {
@@ -77,7 +78,7 @@ const app = new Vue({
         },
         // Visit the unsecure route which doesn't need a JWT token or
         // Authorization header
-        getUnsecure: function () {
+        getUnsecure() {
             let self = this;
             fetch('/api/unsecure')
                 .then(function (response) {
@@ -91,7 +92,7 @@ const app = new Vue({
                     self.result = `You visited the unsecure route that didn't require a JSON Web Token. Name is: ${result.user.name}.`;
                 });
         },
-        getTasks: function() {
+        getTasks() {
             let self = this;
             fetch('/api/tasks', 
             // {
@@ -123,3 +124,5 @@ const app = new Vue({
         }
     }
 });
+
+app.mount('#jwtDemo')
