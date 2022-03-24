@@ -9,9 +9,11 @@
 <body>
 <div id="jwtDemo">
     <div class="container">
-        <div class="jumbotron text-center">
-            <img src="/static/images/jwt-pic-logo.svg" alt=""/>
-            <img src="/static/images/jwt-logo.svg" alt="JWT"/>
+        <div class="p-5 mb-4 bg-dark rounded-3 border jumbotron text-center">
+            <div class="container-fluid py-5">
+                <img src="/static/images/jwt-pic-logo.svg" alt=""/>
+                <img src="/static/images/jwt-logo.svg" alt="JWT"/>
+            </div>
         </div>
         <h1 class="page-header">JWT Example</h1>
         <div class="result alert alert-info">
@@ -31,7 +33,7 @@
             </div>
 
             <div class="btn-group">
-                <button type="button" @click="getToken" class="btn btn-info" data-toggle="modal" data-target="#tokenModal">
+                <button type="button" @click="getToken" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#tokenModal">
                     Get Token
                 </button>
                 <button type="button" @click="removeToken" class="btn btn-danger">Remove Token</button>
@@ -50,19 +52,17 @@
     </div>
 
     <!-- Modal that will display our Token -->
-    <div id="tokenModal" class="modal" tabindex="-1" role="dialog">
+    <div id="tokenModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Generated Token</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title" id="tokenModalLabel">Generated Token</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>Your Generated JSON Web Token is:</p>
                     <figure class="highlight"><span class="jwt-token">{{ token }}</span></figure>
-                    <p>This token was generated with the secret "<strong>some-secret</strong>" and the following payload
+                    <p>This token was generated with the secret key in your config and the following payload
                         data:</p>
                     <pre>
                 <code>
@@ -71,11 +71,11 @@
       'name': 'John Doe'
     }</code>
                 </pre>
-                    <p><span class="badge badge-danger">Note:</span> Usually the generation of a JWT will be done when a
+                    <p><span class="badge bg-danger">Note:</span> Usually the generation of a JWT will be done when a
                         user either registers a new account on your web application or when they login.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -83,8 +83,7 @@
 </div>
 
 <script src="/static/js/vue.js" charset="utf-8"></script>
-<script src="/static/js/jquery.min.js" charset="utf-8"></script>
-<script src="/static/js/bootstrap.min.js" charset="utf-8"></script>
+<script src="/static/js/bootstrap.bundle.min.js" charset="utf-8"></script>
 <script src="/static/js/app.js" charset="utf-8"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@ import datetime
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None)
+    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None) 
 
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
@@ -85,10 +85,10 @@ def generate_token():
     # logs into your web application and you send it back to the frontend
     # where it can be stored in localStorage for any subsequent API requests.
     payload = {
-        'sub': '12345', 
+        'sub': '12345', # subject, usually a unique identifier
         'name': 'John Doe',
-        'iat': datetime.datetime.now(datetime.timezone.utc),
-        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=30)
+        'iat': datetime.datetime.now(datetime.timezone.utc), # issued at time
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=2) # expiration time
     }
     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
 
@@ -101,7 +101,7 @@ def generate_token():
 
 
 @app.route('/api/tasks')
-# @requires_auth
+@requires_auth
 def tasks():
     tasks = [
         {

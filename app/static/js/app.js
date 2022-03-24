@@ -95,16 +95,16 @@ const app = Vue.createApp({
     getTasks() {
       let self = this;
       fetch(
-        "/api/tasks"
-        // {
-        //     'headers': {
-        //         // Try it with the `Basic` schema and you will see it gives an error message.
-        //         // 'Authorization': 'Basic ' + localStorage.getItem('token')
+        "/api/tasks",
+        {
+            'headers': {
+                // Try it with the `Basic` schema and you will see it gives an error message.
+                // 'Authorization': 'Basic ' + localStorage.getItem('token')
 
-        //         // JWT requires the Authorization schema to be `Bearer` instead of `Basic`
-        //         'Authorization': 'Bearer ' + localStorage.getItem('token')
-        //     }
-        // }
+                // JWT requires the Authorization schema to be `Bearer` instead of `Basic`
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        }
       )
         .then(function (response) {
           return response.json();
