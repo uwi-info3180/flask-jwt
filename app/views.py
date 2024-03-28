@@ -1,10 +1,10 @@
 from app import app
 from flask import render_template, request, jsonify, g, make_response
-from app.models import User
+# from app.models import User
 
 # Using JWT
 import jwt
-from flask import _request_ctx_stack
+# from flask import _request_ctx_stack
 from functools import wraps
 import datetime
 
@@ -14,7 +14,7 @@ import datetime
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None) 
+    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None)
 
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
@@ -83,7 +83,7 @@ def api_unsecure():
 def generate_token():
     # Under normal circumstances you would generate this token when a user
     # logs into your web application and you send it back to the frontend
-    # where it can be stored in localStorage for any subsequent API requests.
+    # where it can be stored in localStorage or cookies for any subsequent API requests.
     payload = {
         'sub': '12345', # subject, usually a unique identifier
         'name': 'John Doe',
@@ -147,6 +147,3 @@ def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port="8080")
